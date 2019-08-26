@@ -8,8 +8,8 @@ let googleProfile = {};
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
-passport.deserializeUser(function(obj, done) {
-  done(null, obj);
+passport.deserializeUser(function(user, done) {
+  done(null, user);
 });
 
 passport.use(new GoogleStrategy({
@@ -17,12 +17,12 @@ passport.use(new GoogleStrategy({
     clientSecret: config.GOOGLE_CLIENT_SECRET,
     callbackURL: config.CALLBACK_URL
   },
-  function(accessToken, refreshToken, profile, cb) {
+  function(accessToken, refreshToken, profile, done) {
     googleProfile = {
       id: profile.id,
       displayName: profile.displayName
     };
-    cb(null, profile);
+    done(null, profile);
   }
 ));
 
@@ -44,14 +44,17 @@ app.get('/auth/google', passport.authenticate('google', {
 }));
 
 app.get('/auth/google/callback', passport.authenticate('google', {
-  succesRedirect: '/logged',
-  // succesRedirect: console.log('logged'),
-  failureRedirect: '/'
-  // failureRedirect: console.log('not_logged')
+  successRedirect: '/logged',
+  failureRedirect: '/',
 }));
+
+// app.get('/logout', function(req, res) {
+//   req.logout();
+//   res.redirect()
+// });
 
 app.listen(3000);
 
-// app.use(function(req, res, next) {
-//   res.status(404).send('Sorry we cannot handle your request..');
-// });
+app.use(function(req, res, next) {
+  res.status(404).send('Sorry we cannot handle your request..');
+});

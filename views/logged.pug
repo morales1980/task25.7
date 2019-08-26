@@ -4,6 +4,7 @@ html
   body
     include ./header
 
-    h3 Hello #{user.id}!
+    h3 Hello #{user.displayName}!
+    a(href="https://mail.google.com/mail/u/0/?logout&hl=en") Click to log out
 
     include ./footer
